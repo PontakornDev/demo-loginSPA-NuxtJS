@@ -2,7 +2,7 @@
   <FormContainer>
     <div slot="formData">
       <h3 class="text-2xl font-bold text-center">
-        Login to your account test
+        Login to your account
       </h3>
       <form action="">
         <div class="mt-4">
