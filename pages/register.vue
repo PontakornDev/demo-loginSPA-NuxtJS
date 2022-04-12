@@ -1,67 +1,72 @@
 <template>
-  <FormContainer>
-    <div slot="formData">
-      <h3 class="text-2xl font-bold text-center">
-        Register
-      </h3>
-      <ValidationObserver slim>
-        <form @submit.prevent="onSubmit">
-          <div class="mt-4">
-            <div>
-              <label class="block" for="email">Email<label>
-                <input
-                  type="text"
-                  name="Email"
-                  placeholder="Email"
-                  class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
-                >
-              </label></label>
-            </div>
-            <ValidationProvider v-slot="{ errors }" rules="required|password:@confirm">
-              <div class="mt-4">
-                <label class="block">Password<label>
+  <div>
+    <FormContainer>
+      <div slot="formData">
+        <h3 class="text-2xl font-bold text-center">
+          Register
+        </h3>
+        <ValidationObserver slim>
+          <form @submit.prevent="onSubmit">
+            <div class="mt-4">
+              <div>
+                <label class="block" for="email">Email<label>
                   <input
-                    v-model="data.password"
-                    type="password"
-                    name="password"
-                    placeholder="Password"
+                    v-model="data.email"
+                    type="text"
+                    placeholder="Email"
                     class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
-                    @keyup="checkStatusBtn(errors[0])"
                   >
                 </label></label>
               </div>
-              <div class="mt-4">
-                <label class="block">Confirm Password<label>
-                  <ValidationProvider name="confirm" rules="required">
+              <ValidationProvider v-slot="{ errors }" rules="required|password:@confirm">
+                <div class="mt-4">
+                  <label class="block">Password<label>
                     <input
-                      v-model="data.confirmation"
+                      v-model="data.password"
                       type="password"
-                      placeholder="Confirm Password"
+                      placeholder="Password"
                       class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
-                      @keyup="checkStatusBtn(errors[0])"
+                      @keyup="checkStatusBtn(errors)"
                     >
-                  </ValidationProvider>
-                </label></label>
-              </div>
-              <span class="text-red-600">{{ errors[0] }}</span>
-            </ValidationProvider>
-            <v-card-actions class="flex items-baseline justify-center pt-6">
-              <v-btn :disabled="data.statusBtn" type="submit" class="w-full bg-blue-600 hover:bg-blue-900 text-white">
-                {{ 'Confirm' }}
-              </v-btn>
-            </v-card-actions>
-          </div>
-        </form>
-      </ValidationObserver>
-    </div>
-  </FormContainer>
+                  </label></label>
+                </div>
+                <div class="mt-4">
+                  <label class="block">Confirm Password<label>
+                    <ValidationProvider name="confirm" rules="required">
+                      <input
+                        v-model="data.confirmation"
+                        type="password"
+                        placeholder="Confirm Password"
+                        class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                        @keyup="checkStatusBtn(errors)"
+                      >
+                    </ValidationProvider>
+                  </label></label>
+                </div>
+                <span class="text-red-600">{{ errors[0] }}</span>
+              </ValidationProvider>
+              <v-card-actions class="flex items-baseline justify-center pt-6">
+                <v-btn :disabled="data.statusBtn" type="submit" class="w-full bg-blue-600 hover:bg-blue-900 text-white">
+                  {{ 'Confirm' }}
+                </v-btn>
+              </v-card-actions>
+            </div>
+          </form>
+        </ValidationObserver>
+      </div>
+    </FormContainer>
+    <SnackBar :title="data.snackbarText" :value="data.snackbarStatus" :image="data.imageSnackbarURL" data-app />
+    <PageLoding :value="data.pageLoadingStatus" />
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from '@vue/composition-api'
+import { defineComponent, reactive, useContext, useRouter } from '@nuxtjs/composition-api'
 import { ValidationObserver, ValidationProvider, extend } from 'vee-validate'
 import { required } from 'vee-validate/dist/rules'
 import FormContainer from '~/components/containers/FormContainers.vue'
+import PageLoding from '~/components/PageLoading.vue'
+import SnackBar from '~/components/SnackBar.vue'
 
 extend('required', required)
 extend('password', {
@@ -80,25 +85,71 @@ export default defineComponent({
   components: {
     FormContainer,
     ValidationObserver,
-    ValidationProvider
+    ValidationProvider,
+    PageLoding,
+    SnackBar
   },
   setup () {
+    const { $axios }: any = useContext()
+    const router = useRouter()
+
     const data = reactive({
+      email: '',
       password: '',
       confirmation: '',
-      statusBtn: true
+      snackbarText: '',
+      imageSnackbarURL: '',
+      statusBtn: true,
+      pageLoadingStatus: false,
+      snackbarStatus: false
     })
 
-    const checkStatusBtn = (message: string) => {
-      if (message !== 'Password confirmation does not match') {
-        data.statusBtn = false
-      } else {
+    const checkStatusBtn = (message: any) => {
+      if (message[0]) {
         data.statusBtn = true
+      } else {
+        data.statusBtn = false
       }
     }
 
-    const onSubmit = () => {
-      console.log('Submit')
+    const resetStatus = () => {
+      if (data.snackbarStatus) {
+        setTimeout(() => {
+          data.snackbarStatus = false
+          router.push('/login')
+        }, 2000)
+      }
+      data.pageLoadingStatus = false
+      data.snackbarStatus = true
+    }
+
+    const onSubmit = async () => {
+      const body = {
+        email: data.email,
+        password: data.password
+      }
+      await $axios
+        .$post('/register', body)
+        .then(() => {
+          data.snackbarText = 'ลงทะเบียนสำเร็จ'
+          data.imageSnackbarURL = '/check.png'
+          data.pageLoadingStatus = true
+          setTimeout(() => {
+            resetStatus()
+          }, 2000)
+          setTimeout(() => {
+            resetStatus()
+          }, 3000)
+        })
+        .catch((error: any) => {
+          console.log(error)
+          data.snackbarText = 'เกิดข้อผิดพลาด'
+          data.imageSnackbarURL = '/multiply.png'
+          data.snackbarStatus = true
+          setTimeout(() => {
+            resetStatus()
+          }, 2000)
+        })
     }
     return { onSubmit, data, checkStatusBtn }
   }
