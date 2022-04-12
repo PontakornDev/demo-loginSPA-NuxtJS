@@ -57,8 +57,10 @@ export default {
   },
 
   auth: {
+    cookie: false,
     strategies: {
       local: {
+
         token: {
           property: 'token',
           global: true,
