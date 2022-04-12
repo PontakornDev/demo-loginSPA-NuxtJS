@@ -4,13 +4,14 @@
       <h3 class="text-2xl font-bold text-center">
         Login to your account
       </h3>
-      <form action="">
+      <form @submit.prevent="onSubmit">
         <div class="mt-4">
           <div>
-            <label class="block" for="email">Email<label>
+            <label class="block" for="email">Email/Username<label>
               <input
+                v-model="data.email"
                 type="text"
-                placeholder="Email"
+                placeholder="Email or Username"
                 class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
               >
             </label></label>
@@ -18,6 +19,7 @@
           <div class="mt-4">
             <label class="block">Password<label>
               <input
+                v-model="data.password"
                 type="password"
                 placeholder="Password"
                 class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
@@ -43,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent, reactive } from '@nuxtjs/composition-api'
 import FormContainer from '~/components/containers/FormContainers.vue'
 import Button from '~/components/button/Button.vue'
 
@@ -51,6 +53,17 @@ export default defineComponent({
   components: {
     FormContainer,
     Button
+  },
+  setup () {
+    const data = reactive({
+      email: '',
+      password: ''
+    })
+    const onSubmit = () => {
+      console.log(data.email)
+      console.log(data.password)
+    }
+    return { onSubmit, data }
   }
 })
 </script>

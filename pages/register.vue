@@ -9,11 +9,11 @@
           <form @submit.prevent="onSubmit">
             <div class="mt-4">
               <div>
-                <label class="block" for="email">Email<label>
+                <label class="block" for="email">Email/Username<label>
                   <input
                     v-model="data.email"
                     type="text"
-                    placeholder="Email"
+                    placeholder="Email or Username"
                     class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                   >
                 </label></label>
