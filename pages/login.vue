@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from '@nuxtjs/composition-api'
+import { defineComponent, reactive, useContext, useRouter, onMounted } from '@nuxtjs/composition-api'
 import FormContainer from '~/components/containers/FormContainers.vue'
 import Button from '~/components/button/Button.vue'
 
@@ -55,13 +55,29 @@ export default defineComponent({
     Button
   },
   setup () {
+    const { $auth }: any = useContext()
+    const router = useRouter()
+
     const data = reactive({
       email: '',
       password: ''
     })
-    const onSubmit = () => {
-      console.log(data.email)
-      console.log(data.password)
+
+    onMounted(() => {
+      console.log($auth.loggedIn)
+    })
+    const onSubmit = async () => {
+      const body = {
+        email: data.email,
+        password: data.password
+      }
+
+      await $auth.loginWith('local', { data: body })
+        .then(async (res: any) => {
+          await router.push('/hello')
+          console.log(res)
+        })
+        .catch((error: any) => console.log(error))
     }
     return { onSubmit, data }
   }

@@ -50,23 +50,27 @@ export default {
     '@nuxtjs/auth-next'
   ],
 
+  publicRuntimeConfig: {
+    axios: {
+      browserBaseURL: process.env.URL_API
+    }
+  },
+
   auth: {
     strategies: {
       local: {
         token: {
           property: 'token',
           global: true,
-          required: true,
-          type: 'Bearer'
+          maxAge: 7200
         },
         user: {
-          property: 'user',
-          autoFetch: true
+          property: ''
         },
         endpoints: {
-          login: { url: '/login', method: 'post' }
-          // logout: { url: '/api/auth/logout', method: 'post' },
-          // user: { url: '/api/auth/user', method: 'get' }
+          login: { url: process.env.URL_API + '/login', method: 'post' },
+          logout: { url: process.env.URL_API + '/logout', method: 'delete' },
+          user: { url: process.env.URL_API + '/users', method: 'get' }
         }
       }
     }
