@@ -21,11 +21,12 @@
               <label class="block">Password<label>
                 <input
                   v-model="data.password"
-                  type="password"
+                  :type="data.typePassword"
                   placeholder="Password"
                   class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                 >
               </label></label>
+              <ShowPassword :lable="data.checkBoxText" @showPassword="showPassword" />
             </div>
             <v-card-actions class="flex items-baseline justify-center pt-6">
               <v-btn type="submit" class="w-full bg-blue-600 hover:bg-blue-900 text-white">
@@ -52,12 +53,14 @@ import { defineComponent, reactive, useContext, useRouter, onMounted } from '@nu
 import FormContainer from '~/components/containers/FormContainers.vue'
 import Button from '~/components/button/Button.vue'
 import SnackBar from '~/components/SnackBar.vue'
+import ShowPassword from '~/components/button/ShowPassword.vue'
 
 export default defineComponent({
   components: {
     FormContainer,
     Button,
-    SnackBar
+    SnackBar,
+    ShowPassword
   },
   setup () {
     const { $auth }: any = useContext()
@@ -68,12 +71,25 @@ export default defineComponent({
       password: '',
       titleSnackbar: '',
       valueSnackbar: false,
-      imageSnackbar: ''
+      imageSnackbar: '',
+      typePassword: 'password',
+      checkBoxText: 'Show Password'
     })
 
     onMounted(() => {
       console.log($auth.loggedIn)
     })
+
+    const showPassword = () => {
+      if (data.typePassword === 'password') {
+        data.typePassword = 'text'
+        data.checkBoxText = 'Hide Password'
+      } else {
+        data.typePassword = 'password'
+        data.checkBoxText = 'Show Password'
+      }
+    }
+
     const onSubmit = async () => {
       const body = {
         email: data.email,
@@ -95,7 +111,7 @@ export default defineComponent({
           console.log(error)
         })
     }
-    return { onSubmit, data }
+    return { onSubmit, data, showPassword }
   }
 })
 </script>

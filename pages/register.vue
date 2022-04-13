@@ -23,7 +23,7 @@
                   <label class="block">Password<label>
                     <input
                       v-model="data.password"
-                      type="password"
+                      :type="data.typePassword"
                       placeholder="Password"
                       class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                       @keyup="checkStatusBtn(errors)"
@@ -35,13 +35,14 @@
                     <ValidationProvider name="confirm" rules="required">
                       <input
                         v-model="data.confirmation"
-                        type="password"
+                        :type="data.typePassword"
                         placeholder="Confirm Password"
                         class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                         @keyup="checkStatusBtn(errors)"
                       >
                     </ValidationProvider>
                   </label></label>
+                  <ShowPassword :lable="data.checkBoxText" @showPassword="showPassword" />
                 </div>
                 <span class="text-red-600">{{ errors[0] }}</span>
               </ValidationProvider>
@@ -67,6 +68,7 @@ import { required } from 'vee-validate/dist/rules'
 import FormContainer from '~/components/containers/FormContainers.vue'
 import PageLoding from '~/components/PageLoading.vue'
 import SnackBar from '~/components/SnackBar.vue'
+import ShowPassword from '~/components/button/ShowPassword.vue'
 
 extend('required', required)
 extend('password', {
@@ -87,7 +89,8 @@ export default defineComponent({
     ValidationObserver,
     ValidationProvider,
     PageLoding,
-    SnackBar
+    SnackBar,
+    ShowPassword
   },
   setup () {
     const { $axios }: any = useContext()
@@ -101,7 +104,9 @@ export default defineComponent({
       imageSnackbarURL: '',
       statusBtn: true,
       pageLoadingStatus: false,
-      snackbarStatus: false
+      snackbarStatus: false,
+      typePassword: 'password',
+      checkBoxText: 'Show Password'
     })
 
     const checkStatusBtn = (message: any) => {
@@ -109,6 +114,16 @@ export default defineComponent({
         data.statusBtn = true
       } else {
         data.statusBtn = false
+      }
+    }
+
+    const showPassword = () => {
+      if (data.typePassword === 'password') {
+        data.typePassword = 'text'
+        data.checkBoxText = 'Hide Password'
+      } else {
+        data.typePassword = 'password'
+        data.checkBoxText = 'Show Password'
       }
     }
 
@@ -151,7 +166,7 @@ export default defineComponent({
           }, 2000)
         })
     }
-    return { onSubmit, data, checkStatusBtn }
+    return { onSubmit, data, checkStatusBtn, showPassword }
   }
 })
 </script>
