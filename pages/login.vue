@@ -104,7 +104,7 @@ export default defineComponent({
         .catch((error: any) => {
           data.imageSnackbar = '/multiply.png'
           data.valueSnackbar = true
-          data.titleSnackbar = 'SCIT611998030'
+          data.titleSnackbar = 'Email or Password is incoreect'
           setTimeout(() => {
             data.valueSnackbar = false
           }, 3000)

@@ -1,6 +1,6 @@
 <template>
   <v-checkbox
-    color="primary"
+    color="secondary"
     :label="checkBoxText"
     @click="() => $emit('showPassword')"
   />

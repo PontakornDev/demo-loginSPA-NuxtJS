@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex justify-center pt-6">
-      <span><b>พนธกร ช่างปัด</b></span>
+      <span><b>Login Success</b></span>
     </div>
     <div class="flex justify-center pt-6">
       <v-btn text class="w-60 bg-blue-600 hover:bg-blue-900 text-white" @click="logOut">
