@@ -50,6 +50,18 @@ export default {
     '@nuxtjs/auth-next'
   ],
 
+  vuetify: {
+    theme: {
+      themes: {
+        dark: {
+          primary: '#4caf50',
+          secondary: '#ff8c00',
+          accent: '#9c27b0'
+        }
+      }
+    }
+  },
+
   publicRuntimeConfig: {
     axios: {
       browserBaseURL: process.env.URL_API
@@ -81,6 +93,7 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
   },
+
   env: {
     URL_API: process.env.URL_API || ''
   }

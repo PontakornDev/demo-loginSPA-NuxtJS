@@ -26,7 +26,7 @@
                   class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                 >
               </label></label>
-              <ShowPassword :lable="data.checkBoxText" @showPassword="showPassword" />
+              <ShowPassword data-app :lable="data.checkBoxText" @showPassword="showPassword" />
             </div>
             <v-card-actions class="flex items-baseline justify-center pt-6">
               <v-btn type="submit" class="w-full bg-blue-600 hover:bg-blue-900 text-white">
